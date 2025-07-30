@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>شات بوت الجامعة</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #3a8665, #d2e3dc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Tahoma", sans-serif;
+    }
+
+    .chat-box {
+      width: 400px;
+      height: 600px;
+      background-color: white;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .header {
+      background-color: #2c5f4a;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: #f5f5f5;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 90%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .bot {
+      background-color: #e0e0e0;
+      align-self: flex-start;
+    }
+
+    .user {
+      background-color: #c9f7e4;
+      align-self: flex-end;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+
+    .input-area button {
+      background-color: #2c5f4a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    a {
+      color: #0c5e3d;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <div class="header">🤖 شات بوت الجامعة</div>
+    <div class="messages" id="chat">
+      <div class="message bot">
+        مرحبًا بك في شات بوت الجامعة 👋<br>
+        1. شروط القبول<br>
+        2. التخصصات<br>
+        3. مواعيد إدارة الابتعاث<br>
+        4. الأسئلة الشائعة
+      </div>
+    </div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="اكتب رسالتك هنا..." onkeypress="handleEnter(event)" />
+      <button onclick="sendMessage()">إرسال</button>
+    </div>
+  </div>
+
+  <script>
+    function handleEnter(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("user-input");
+      const message = input.value.trim();
+      if (!message) return;
+
+      const chat = document.getElementById("chat");
+
+      const userDiv = document.createElement("div");
+      userDiv.className = "message user";
+      userDiv.textContent = message;
+      chat.appendChild(userDiv);
+
+      fetch("/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const botDiv = document.createElement("div");
+          botDiv.className = "message bot";
+
+          if (data.response.includes("https://")) {
+            const linkRegex = /(https?:\/\/[^\s]+)/g;
+            const parts = data.response.split(linkRegex);
+            parts.forEach(part => {
+              if (part.startsWith("http")) {
+                const a = document.createElement("a");
+                a.href = part;
+                a.target = "_blank";
+                a.textContent = "اضغط هنا";
+                botDiv.appendChild(a);
+              } else {
+                botDiv.appendChild(document.createTextNode(part));
+              }
+            });
+          } else {
+            botDiv.textContent = data.response;
+          }
+
+          chat.appendChild(botDiv);
+          chat.scrollTop = chat.scrollHeight;
+        });
+
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
+
+
