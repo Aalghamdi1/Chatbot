@@ -65,8 +65,16 @@
     .input-area input {
       flex: 1;
       padding: 10px;
-      border: none;
+      border: 2px solid #007c3e; /* أخضر جامعة الملك عبدالعزيز */
+      border-radius: 12px;
       outline: none;
+      font-size: 16px;
+      color: #333;
+      transition: border 0.3s ease;
+    }
+
+    .input-area input:focus {
+      border-color: #005f30; /* أخضر أغمق عند الضغط */
     }
 
     .input-area button {
@@ -85,14 +93,14 @@
 </head>
 <body>
   <div class="chat-box">
-    <div class="header">🤖 شات بوت الجامعة</div>
+    <div class="header">🤖 شات بوت ادارة البعثات</div>
     <div class="messages" id="chat">
       <div class="message bot">
-        مرحبًا بك في شات بوت الجامعة 👋<br>
-        1. شروط القبول<br>
-        2. التخصصات<br>
-        3. مواعيد إدارة الابتعاث<br>
-        4. الأسئلة الشائعة
+        مرحبًا بك في شات بوت ادارة البعثات 👋<br>
+        1- شروط القبول<br>
+        2- التخصصات<br>
+        3- مواعيد إدارة الابتعاث<br>
+        4- الأسئلة الشائعة
       </div>
     </div>
     <div class="input-area">
@@ -159,5 +167,3 @@
   </script>
 </body>
 </html>
-
-
